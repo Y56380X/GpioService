@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using GpioService.Interface;
 
@@ -7,9 +8,10 @@ namespace GpioService.Service.Common
 	{
 		public bool TryExport(int pinNumber, out IGpioPin pin)
 		{
-			using (var export = File.OpenWrite("/sys/..."))
+			using (var export = File.OpenWrite("/sys/class/gpio/export"))
 				export.WriteByte((byte)pinNumber);
-			UserContext.Current
+			
+			throw new NotImplementedException();
 		}
 
 		public bool TryUnexport(IGpioPin pin)
