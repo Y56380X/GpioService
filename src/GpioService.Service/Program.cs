@@ -2,6 +2,7 @@
 using System.IO.Pipes;
 using System.Threading;
 using GpioService.Common.IPC;
+using GpioService.Interface;
 using GpioService.Service.Common;
 using Newtonsoft.Json;
 using static GpioService.Common.IPC.Constants;
@@ -25,11 +26,28 @@ namespace GpioService.Service
 					ipcServer.WaitForConnection();
 
 				var request = ipcServer.ReadMessage<GpioRequest>();
+				var response = new GpioResponse();
 				
-				using (var userContext = new UserContext(ipcServer.GetImpersonationUserName()))
+				using (new UserContext(ipcServer.GetImpersonationUserName()))
 				{
+					#if DEBUG
 					Console.WriteLine(JsonConvert.SerializeObject(request));
-					//var gpioManager = new GpioManager(); // TODO: Get from DI
+					#endif
+					
+					var gpioManager = new GpioManager(); // TODO: Get from DI
+					switch (request.Action)
+					{
+						case RequestAction.Export:
+							response.Result = gpioManager.TryExport(request.PinNumber, out IGpioPin pin);
+							response.Payload = (pin as GpioPin)?.Path;
+							break;
+						case RequestAction.Unexport:
+							response.Result = gpioManager.TryUnexport(new GpioPin(request.PinNumber));
+							break;
+						default:
+							response.Result = false;
+							break;
+					}
 				}
 				
 				ipcServer.Disconnect();
@@ -42,8 +60,8 @@ namespace GpioService.Service
 		{
 			while (true)
 			{
-				var input = Console.ReadLine();
-				var request = new GpioRequest{ PinNumber = 190, User = input, Action = RequestAction.Export};
+				Console.ReadLine();
+				var request = new GpioRequest{ PinNumber = 7, Action = RequestAction.Export};
 				
 				var commStream2 = new NamedPipeClientStream(".", PipeName, PipeDirection.InOut);
 				commStream2.Connect(); 

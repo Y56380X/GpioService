@@ -9,9 +9,10 @@ namespace GpioService.Service.Common
 		public int Value { get; set; }
 		public string Path { get; }
 
-		public GpioPin()
+		public GpioPin(int number, string path = null)
 		{
-			
+			Number = number;
+			Path = path;
 		}
 	}
 }

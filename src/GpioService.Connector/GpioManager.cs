@@ -4,14 +4,9 @@ namespace GpioService.Connector
 {
 	public class GpioManager : IGpioManager
 	{
-		public bool TryExport(out IGpioPin pin)
+		public bool TryExport(int pinNumber, out IGpioPin pin)
 		{
-			// Request
-			string filename = "";
-
-			pin = new GpioPin(filename);
-
-			return true;
+			throw new System.NotImplementedException();
 		}
 
 		public bool TryUnexport(IGpioPin pin)
