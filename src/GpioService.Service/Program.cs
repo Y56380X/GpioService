@@ -1,12 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.IO.Pipes;
-using System.Text;
 using System.Threading;
-using GpioService.Interface.IPC;
+using GpioService.Common.IPC;
 using GpioService.Service.Common;
 using Newtonsoft.Json;
-using static GpioService.Interface.IPC.Constants;
+using static GpioService.Common.IPC.Constants;
 
 namespace GpioService.Service
 {
@@ -52,31 +50,6 @@ namespace GpioService.Service
 				commStream2.SendMessage(request);
 				commStream2.Dispose();
 			}
-		}
-		
-		private static void SendMessage<T>(this Stream stream, T message)
-		{
-			var messageBuffer = Encoding.Default.GetBytes(JsonConvert.SerializeObject(message));
-			
-			// Write message length
-			var lengthBuffer = BitConverter.GetBytes(messageBuffer.Length);
-			stream.Write(lengthBuffer);
-			
-			// Write message
-			stream.Write(messageBuffer);
-		}
-
-		private static T ReadMessage<T>(this Stream stream)
-		{
-			// Read message length
-			var lengthBuffer = new byte[sizeof(int)];
-			stream.Read(lengthBuffer);
-			
-			// Read message
-			var messageBuffer = new byte[BitConverter.ToInt32(lengthBuffer)];
-			stream.Read(messageBuffer);
-
-			return JsonConvert.DeserializeObject<T>(Encoding.Default.GetString(messageBuffer));
 		}
 	}
 }

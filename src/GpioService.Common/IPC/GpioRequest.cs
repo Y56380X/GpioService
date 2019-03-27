@@ -1,4 +1,4 @@
-namespace GpioService.Interface.IPC
+namespace GpioService.Common.IPC
 {
 	public class GpioRequest
 	{

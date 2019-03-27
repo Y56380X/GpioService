@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\GpioService.Common\GpioService.Common.csproj" />
       <ProjectReference Include="..\GpioService.Interface\GpioService.Interface.csproj" />
     </ItemGroup>
 
